@@ -16,14 +16,14 @@ export default class Data {
     }
 
     if (requiresAuth) {    
-      const encodedCredentials = btoa(`${credentials.username}:${credentials.password}`);
+      const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
       options.headers['Authorization'] = `Basic ${encodedCredentials}`;
     }
     return fetch(url, options);
   }
 
-  async getUser(username, password) {
-    const response = await this.api(`/users`, 'GET', null, true, { username, password });
+  async getUser(emailAddress, password) {
+    const response = await this.api(`/users`, 'GET', null, true, { emailAddress, password });
     if (response.status === 200) {
       return response.json().then(data => data);
     }
@@ -41,6 +41,7 @@ export default class Data {
       return [];
     }
     else if (response.status === 400) {
+      // console.log(response.json())
       return response.json().then(data => {
         return data.errors;
       });
