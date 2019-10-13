@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-
+import Form from './Form';
 
 
 export default class UpdateCourse extends Component {
@@ -8,6 +7,12 @@ export default class UpdateCourse extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            errors: [],
+            courseTitle: '',
+            description: '',
+            estimatedTime: '',
+            materialsNeeded: '',
+            id: '',
             'courses': [],
         };
     }
@@ -24,76 +29,155 @@ export default class UpdateCourse extends Component {
             .catch(err => (Error('There seems to be problem ', err)));
     }
 
-
-    /*
-     
-      async putItem() {
-          await fetch('localhost:5000/api/courses', {
-              method: 'post',
-              body: data,
-          })
-              .then(response => response.json())
-              .then(data => {
-                  this.setState({ 'postCourse': data.course });
-                  console.log(data.course)
-              });
-      }
-  */
-
     render() {
+        const {
+            errors,
+            // courseTitle,
+            // description,
+            // estimatedTime,
+            // materialsNeeded,
+        } = this.state;
+
+        const { context } = this.props;
+        const authUser = context.authenticatedUser;
+
         return (
             <div>
-                <div className="header">
-                    <div className="bounds">
-                        <h1 className="header--logo">Courses</h1>
-                        <nav><span>Welcome Joe Smith!</span><a className="signout" href="index.html">Sign Out</a></nav>
-                    </div>
-                </div>
+
                 <hr />
                 <div className="bounds course--detail">
                     <h1>Update Course</h1>
                     <div>
-                        <form>
-                            <div className="grid-66">
-                                <div className="course--header">
-                                    <h4 className="course--label">Course</h4>
-                                    <div>
-                                        <input id="title" name="title" type="text" className="input-title course--title--input" placeholder="Course title..."
-                                            value={this.state.courses.title} />
-                                    </div>
-                                    <p>By Joe Smith</p>
-                                </div>
-                                <div className="course--description">
-                                    <div>
-                                        <textarea id="description" name="description" className="" placeholder="Course description..." value={this.state.courses.description}></textarea>
 
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="grid-25 grid-right">
-                                <div className="course--stats">
-                                    <ul className="course--stats--list">
-                                        <li className="course--stats--list--item">
-                                            <h4>Estimated Time</h4>
-                                            <div>
-                                                <input id="estimatedTime" name="estimatedTime" type="text" className="course--time--input"
-                                                    placeholder="Hours" value={this.state.courses.estimatedTime} />
+                        <Form
+                            cancel={this.cancel}
+                            errors={errors}
+                            submit={this.submit}
+                            submitButtonText="Update Course"
+                            elements={() => (
+                                <div>
+                                    <div className="grid-66">
+                                        <div className="course--header">
+                                            <h4 className="course--label">Course</h4>
+                                            <React.Fragment>
+                                                <input id="courseTitle"
+                                                    name="courseTitle"
+                                                    type="text"
+                                                    className="input-title course--title--input"
+                                                    placeholder="Course title..."
+                                                    defaultValue={this.state.courses.title}
+                                                    onChange={this.change} />
+                                            </React.Fragment>
 
+                                            <div className="course--description">
+                                                <React.Fragment>
+                                                    <textarea id="description"
+                                                        name="description"
+                                                        type="text"
+                                                        placeholder="Course description..."
+                                                        defaultValue={this.state.courses.description}
+                                                        onChange={this.change} />
+                                                </React.Fragment>
                                             </div>
-                                        </li>
-                                        <li className="course--stats--list--item">
-                                            <h4>Materials Needed</h4>
-                                            <div><textarea id="materialsNeeded" name="materialsNeeded" className="" placeholder="List materials..." value={this.state.courses.materialsNeeded}></textarea></div>
-                                        </li>
-                                    </ul>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="grid-25 grid-right">
+                                            <div className="course--stats">
+                                                <ul className="course--stats--list">
+                                                    <li key="Estimated Time">
+                                                        <h4>Estimated Time</h4>
+                                                        <div>
+                                                            <React.Fragment>
+                                                                <input
+                                                                    id="estimatedTime"
+                                                                    name="estimatedTime"
+                                                                    type="text"
+                                                                    className="course--time--input"
+                                                                    placeholder="Hours"
+                                                                    defaultValue={this.state.courses.estimatedTime || ""}
+                                                                    onChange={this.change} />
+                                                            </React.Fragment>
+                                                        </div>
+                                                    </li>
+                                                    <li key="Materials">
+                                                        <h4>Materials Needed</h4>
+                                                        <div>
+                                                            <textarea
+                                                                id="materialsNeeded"
+                                                                name="materialsNeeded"
+                                                                placeholder="List materials..."
+                                                                defaultValue={this.state.courses.materialsNeeded}
+                                                                onChange={this.change}
+                                                            />
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="grid-100 pad-bottom"><button className="button" type="submit">Update Course</button><button className="button button-secondary" onclick="event.preventDefault(); location.href='course-detail.html';">Cancel</button></div>
-                        </form>
+                            )} />
+
                     </div>
                 </div>
             </div>
 
         );
     };
+
+
+    change = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+
+        this.setState(() => {
+            return {
+                [name]: value
+            };
+        });
+    }
+
+    submit = () => {
+        const { context } = this.props;
+        const {
+            errors,
+            courseTitle,
+            description,
+            estimatedTime,
+            materialsNeeded,
+            id
+        } = this.state;
+
+        // Create user
+        const user = {
+            errors,
+            courseTitle,
+            description,
+            estimatedTime,
+            materialsNeeded,
+            id
+        };
+
+        context.data.updateCourse(this.state.course)
+            .then(errors => {
+                if (errors.length) {
+                    this.setState({ errors });
+                } else {
+                    this.props.history.push('/signin');
+
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                this.props.history.push('/error');
+            });
+    }
+
+    cancel = () => {
+        this.props.history.push('/');
+    }
+
+
 };
+

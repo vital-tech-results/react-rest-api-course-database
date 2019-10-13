@@ -24,7 +24,7 @@ router.get('/', asyncHandler(async (req, res) => {
                 res.json({ course: course });
             } else {
                 res.status(404).json({
-                    message: "The get request is not Not found"
+                    "errors": ["The get request is not Not found"]
                 });
             }
         });
@@ -46,7 +46,7 @@ router.post('/', authenticateUser, asyncHandler(async (req, res) => {
             })
     } else {
         res.status(400).json({
-            message: "Title is required. Description is required."
+            "errors": ["Title is required. Description is required."]
         });
     }
 }));
@@ -67,7 +67,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
                 res.json({ course: course });
             } else {
                 res.status(404).json({
-                    message: "The get request is not Not found"
+                    "errors": ["The get request is not Not found"]
                 });
             }
         });
@@ -103,12 +103,13 @@ router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
                 });
         } else {
             res.status(400).json({
-                message: "Title and description are required"
+                "errors": ["Title and description are required"]
             });
+            
         }
     } else {
         res.status(403).json({
-            message: "You do not have authorization to edit this course."
+            "errors": ["You do not have authorization to edit this course."]
         });
     }
 }));
@@ -137,12 +138,12 @@ router.delete('/:id', authenticateUser, asyncHandler(async (req, res) => {
                 });
         } else {
             res.status(404).json({
-                message: "The DELETE request is not Not found"
+                "errors": ["The DELETE request is not Not found"]
             });
         }
     } else {
         res.status(403).json({
-            message: "You do not have authorization to DELETE this course."
+            "errors": ["You do not have authorization to DELETE this course."]
         });
     }
 }));

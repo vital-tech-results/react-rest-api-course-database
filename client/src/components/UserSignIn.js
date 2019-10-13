@@ -8,7 +8,7 @@ export default class UserSignIn extends Component {
     // constructor() {
     //     super();
     //     this.state = {
-    //         'username': '',
+    //         'emailAddress': '',
     //         'firstName': '',
     //         'lastName': '',
     //         'password': '',
@@ -19,7 +19,7 @@ export default class UserSignIn extends Component {
         super(props, context);
         // this.signIn = this.signIn.bind(this);
         this.state = {
-            username: '',
+            emailAddress: '',
             password: '',
             errors: [],
         }
@@ -56,15 +56,15 @@ export default class UserSignIn extends Component {
     //     }
 
     //     if (requiresAuth) {
-    //         const encodedCredentials = btoa(`${credentials.username}:${credentials.password}`);
+    //         const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
     //         options.headers['Authorization'] = `Basic ${encodedCredentials}`;
     //     }
     //     return fetch(url, options);
     // }
 
 
-    // async getUser(username, password) {
-    //     const response = await this.api(`/users`, 'GET', null, true, { username, password });
+    // async getUser(emailAddress, password) {
+    //     const response = await this.api(`/users`, 'GET', null, true, { emailAddress, password });
     //     if (response.status === 200) {
     //         return response.json().then(data => data);
     //     }
@@ -76,8 +76,8 @@ export default class UserSignIn extends Component {
     //     }
     // }
 
-    // async signIn(username, password) {
-    //     const user = await this.getUser(username, password);
+    // async signIn(emailAddress, password) {
+    //     const user = await this.getUser(emailAddress, password);
     //     if (user !== null) {
     //         this.setState(() => {
     //             return {
@@ -98,7 +98,7 @@ export default class UserSignIn extends Component {
     render() {
 
         const {
-            username,
+            emailAddress,
             password,
             errors,
         } = this.state;
@@ -111,26 +111,7 @@ export default class UserSignIn extends Component {
                 <div className="bounds">
                     <div className="grid-33 centered signin">
                         <h1>Sign In</h1>
-                        <div>
-                            {/* <form >
-
-                                <div>
-                                    <input id="emailAddress" name="emailAddress" type="text" className="" placeholder="Email Address" value="" />
-                                </div>
-
-                                <div>
-                                    <input id="password" name="password" type="password" className="" placeholder="Password" value="" />
-                                </div>
-
-                                <div className="grid-100 pad-bottom">
-
-                                    <button className="button" type="submit">Sign In</button>
-
-                                    <button className="button button-secondary" onclick="event.preventDefault(); location.href='index.html';">Cancel</button>
-                                </div>
-
-                            </form> */}
-
+                        <div>                            
                             <Form
                                 cancel={this.cancel}
                                 errors={errors}
@@ -139,12 +120,12 @@ export default class UserSignIn extends Component {
                                 elements={() => (
                                     <React.Fragment>
                                         <input
-                                            id="username"
-                                            name="username"
+                                            id="emailAddress"
+                                            name="emailAddress"
                                             type="text"
-                                            value={username}
+                                            value={emailAddress}
                                             onChange={this.change}
-                                            placeholder="User Name" />
+                                            placeholder="Email Address" />
                                         <input
                                             id="password"
                                             name="password"
@@ -181,14 +162,13 @@ export default class UserSignIn extends Component {
     submit = () => {
         const { context } = this.props;
         const { from } = this.props.location.state || { from: { pathname: '/' } };
-        const { username, password } = this.state;
+        const { emailAddress, password } = this.state;
 
-        context.actions.signIn(username, password)
+        context.actions.signIn(emailAddress, password)
             .then((user) => {
                 if (user === null) {
                     this.setState(() => {
-                        console.log('ok')
-                        return { errors: ['Sign-in was unsuccessful'] };
+                        return { errors: ['Sign-in was NOT successful. Try again.'] };
                     });
                 } else {
                     this.props.history.push(from);

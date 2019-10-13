@@ -17,7 +17,6 @@ export default class CourseList extends Component {
             .then(response => response.json())
             .then(data => {
                 this.setState({ 'courses': data.course })
-                console.log(data.course)
             })
             .catch(err => (Error('There seems to be problem ', err)));
     }

@@ -1,43 +1,34 @@
 import React, { Component } from 'react';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
     Link,
     Redirect,
-    useHistory,
-    useLocation,
-    useParams
 } from "react-router-dom";
-import PropTypes from "prop-types";
 
 export default class CourseDetail extends Component {
-
-
     constructor(props) {
         super(props);
         this.deleteItem = this.deleteItem.bind(this);
         this.state = {
             'courses': [],
-            'deleted': false
+            'deleted': false,
+            'user': ''
         };
     }
-    componentDidMount() {
+    componentWillMount() {
         this.getItems();
     }
     getItems() {
         fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`)
             .then(response => response.json())
             .then(data => {
-                this.setState({ 'courses': data.course });
-
+                this.setState({ 'courses': data.course});
             })
             .catch(err => (Error('There seems to be problem ', err)));
     }
 
 
     deleteItem() {
-        const { match, location, history } = this.props;
+        const { location } = this.props;
         console.log(location.pathname);
 
         fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`, {
@@ -60,35 +51,37 @@ export default class CourseDetail extends Component {
         if (deleted) {
             return <Redirect to='/' />;
         }
-
+        const { context } = this.props;
+        const authUser = context.authenticatedUser;
 
         return (
             <div>
-                {/* <div>You are now at {location.pathname}</div> */}
-                <div className="header">
-                    <div className="bounds">
-                        <h1 className="header--logo">Courses</h1>
-                        <nav><span>Welcome Joe Smith!</span><a className="signout" href="index.html">Sign Out</a></nav>
-                    </div>
-                </div>
+
                 <hr />
                 <div>
 
                     <div className="actions--bar">
                         <div className="bounds">
                             <div className="grid-100">
-                                <span>
 
-                                    {/* pass params to Link https://stackoverflow.com/questions/30115324/pass-props-in-link-react-router/30115524 */}
-                                    <Link to={`/courses/${this.props.match.params.id}/update`} className="button">Update Course</Link>
-
-                                    {/* delete button */}
-                                    <Link to="#" onClick={this.deleteItem} className="button">Delete Course
+                                {authUser ?
+                                    <React.Fragment>
+                                        <span>
+                                            {/* pass params to Link https://stackoverflow.com/questions/30115324/pass-props-in-link-react-router/30115524 */}
+                                            <Link to={`/courses/${this.props.match.params.id}/update`} className="button">Update Course</Link>
+                                            {/* delete button */}
+                                            <Link to="#" onClick={this.deleteItem} className="button">Delete Course
                                     </Link>
+                                            <Link to="/" className="button button-secondary">Return to List</Link>
+                                        </span>
+                                    </React.Fragment>
+                                    :
 
-                                </span>
-
-                                <a className="button button-secondary" href="index.html">Return to List</a>
+                                    <React.Fragment>
+                                        <p>In order to delete or update a course you must me signed in. Looks like you are not signed in. <Link to="/signin">CLICK HERE</Link> to sign in or <Link to="/signup">Click here to sign up!</Link> </p>
+                                        <Link to="/" className="button button-secondary">Return to List</Link>
+                                    </React.Fragment>
+                                }
 
                             </div>
                         </div>
@@ -100,7 +93,7 @@ export default class CourseDetail extends Component {
                             <div className="course--header">
                                 <h4 className="course--label">Course</h4>
                                 <h3 className="course--title">{this.state.courses.title}</h3>
-                                <p>{this.state.courses.username}</p>
+                                {/* <p>{this.state.courses.firstName}</p> */}
                             </div>
                             <div className="course--description">
                                 <p>{this.state.courses.description}</p>

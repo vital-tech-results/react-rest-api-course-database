@@ -25,14 +25,12 @@ export default class UserSignUp extends Component {
             errors,
         } = this.state;
 
-
-
-
-
+      
         return (
             <div className="bounds">
                 <div className="grid-33 centered signin">
                     <h1>Sign Up</h1>
+
                     <Form
                         cancel={this.cancel}
                         errors={errors}
@@ -65,16 +63,22 @@ export default class UserSignUp extends Component {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    value={password}
                                     onChange={this.change}
                                     placeholder="Password" />
+                                <input
+                                    id="confirmPassword"
+                                    name="confirmPassword"
+                                    type="password"
+                                    value={password}
+                                    onChange={this.change}
+                                    placeholder="Confirm Password" />
                             </React.Fragment>
                         )} />
                     <p>
                         Already have a user account? <Link to="/signin">Click here</Link> to sign in!
           </p>
                 </div>
-            </div>
+            </div >
         );
     }
 

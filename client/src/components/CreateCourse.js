@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Link, useHistory } from 'react-router-dom';
 import Form from './Form';
 
-export default class CourseList extends Component {
+export default class CreateCourse extends Component {
     constructor() {
         super();
         this.state = {
@@ -13,25 +12,6 @@ export default class CourseList extends Component {
             materialsNeeded: ''
         };
     }
-    /*
-      componentDidMount() {
-          this.postItems();
-      }
-  
-  
-      async postItem() {
-          await fetch('localhost:5000/api/courses', {
-              method: 'post',
-              body: data,
-          })
-              .then(response => response.json())
-              .then(data => {
-                  this.setState({ 'postCourse': data.course });
-                  console.log(data.course)
-              });
-      }
-  */
-
     change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -43,10 +23,10 @@ export default class CourseList extends Component {
         });
     }
 
-
     cancel = () => {
         this.props.history.push('/');
     }
+
     render() {
 
         const {
@@ -57,20 +37,15 @@ export default class CourseList extends Component {
             materialsNeeded,
         } = this.state;
 
-        return (
-            <div>
-                <hr />
+        const { context} = this.props;
+        const authUser = context.authenticatedUser;
+
+        return (                          
                 <div className="bounds course--detail">
                     <h1>Create Course</h1>
                     <div>
-                        <div>
-                            <h2 className="validation--errors--label">Validation errors</h2>
-                            <div className="validation-errors">
-                                <ul>
-                                    <li>Please provide a value for "Title"</li>
-                                    <li>Please provide a value for "Description"</li>
-                                </ul>
-                            </div>
+                        <div className="validation--errors--label">
+                            {errors ? errors.map(error => <li key={error}>{error}</li>) : ''}
                         </div>
 
                         <Form
@@ -86,31 +61,29 @@ export default class CourseList extends Component {
                                             <React.Fragment>
                                                 <input
                                                     id="username"
-                                                    courseTitle="courseTitle"
+                                                    name="courseTitle"
                                                     type="text"
                                                     className="input-title course--title--input"
                                                     value={courseTitle}
                                                     onChange={this.change}
                                                     placeholder="Course Title" />
                                             </React.Fragment>
-
-                                            {/* course description */}
-                                            <div className="course--description">
-                                                <React.Fragment>
-                                                    <textarea
-                                                        id="description"
-                                                        name="description"
-                                                        type="text"
-                                                        value={description}
-                                                        onChange={this.change}
-                                                        placeholder="Course description..." />
-                                                </React.Fragment>
-                                            </div>
+                                        </div>
+                                        {/* course description */}
+                                        <div className="course--description">
+                                            <React.Fragment>
+                                                <textarea
+                                                    id="description"
+                                                    name="description"
+                                                    type="text"
+                                                    value={description}
+                                                    onChange={this.change}
+                                                    placeholder="Course description..." />
+                                            </React.Fragment>
                                         </div>
                                     </div>
 
-                                    {/* right side of form */}
-                                    <div>
+                                    {/* right side of form */}                                    
                                         <div className="grid-25 grid-right">
                                             <div className="course--stats">
                                                 <ul className="course--stats--list">
@@ -129,14 +102,13 @@ export default class CourseList extends Component {
                                                             </React.Fragment>
                                                         </div>
                                                     </li>
-                                                    <li class="course--stats--list--item">
+                                                    <li className="course--stats--list--item">
                                                         <h4>Materials Needed</h4>
                                                         <div>
                                                             <React.Fragment>
                                                                 <textarea
                                                                     id="materialsNeeded"
                                                                     name="materialsNeeded"
-
                                                                     value={materialsNeeded}
                                                                     onChange={this.change}
                                                                     placeholder="List materials..." />
@@ -145,17 +117,11 @@ export default class CourseList extends Component {
                                                     </li>
                                                 </ul>
                                             </div>
-                                        </div>
-                                    </div>
-
+                                        </div>                                    
                                 </div>
-
                             )} />
-
                     </div>
-                </div>
-            </div >
-
+                </div>            
         );
     };
 };
