@@ -15,8 +15,8 @@ export default class CourseDetail extends Component {
             'courses': [],
             'deleted': false,
             'userID': '',
-            'emailAddress': authUser.emailAddress,
-            'password': authUser.password
+            'emailAddress': null,
+            'password': null
         };
     }
     componentDidMount() {
@@ -26,20 +26,14 @@ export default class CourseDetail extends Component {
         fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`)
             .then(response => response.json())
             .then(data => {
-                const { context } = this.props;
-                const authUser = context.authenticatedUser;
-
-                if (authUser.emailAddress == data.course.User.emailAddress) {
-                    this.setState({ 'courses': data.course, 'userId': data.course.userId});
-                    console.log(this.state.emailAddress);
-                    console.log(this.state.password);
-                    console.log(this.state.userId);
-                    console.log(this.state.courses)
+                
+                this.setState({ 'courses': data.course, 'userId': data.course.userId });
+                // console.log(this.state.emailAddress);
+                // console.log(this.state.password);
+                // console.log(this.state.userId);
+                console.log(this.state.courses)
                     // console.log(data.course.User.emailAddress)
-                } else {
-                    console.log(authUser.emailAddress)
-                    console.log(data.course.userId)
-                }
+               
                 
             })
             .catch(err => (Error('There seems to be problem ', err)));
@@ -48,12 +42,22 @@ export default class CourseDetail extends Component {
 
     deleteItem() {
         const { context } = this.props;
+        const authUser = context.authenticatedUser;
+        
+        if (authUser.emailAddress === this.state.courses.User.emailAddress) {
+            console.log(this.state.emailAddress);
+                // console.log(this.state.password);
+                // console.log(this.state.userId);
+        } else {
+            console.log(authUser.emailAddress)
+        }
+        
         const id  = this.props.match.params.id;
         const emailAddress = this.state.emailAddress;
         const password = this.state.password;
         console.log(emailAddress);
         console.log(password);
-        context.data.deleteCourse(id, emailAddress, password);
+        context.data.deleteCourse(id, emailAddress, password );
     //     const { location } = this.props;
     //     console.log(location.pathname);
     //     const { context } = this.props;

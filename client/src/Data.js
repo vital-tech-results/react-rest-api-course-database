@@ -8,7 +8,7 @@ export default class Data {
       method,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-      },
+      },    
     };
 
     if (body !== null) {
@@ -19,6 +19,8 @@ export default class Data {
       const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
       options.headers['Authorization'] = `Basic ${encodedCredentials}`;
     }
+    console.log(options.headers);
+    
     return fetch(url, options);
   }
 
@@ -65,7 +67,8 @@ export default class Data {
 
 
   async deleteCourse(id, emailAddress, password) {
-    const response = await this.api(`/courses/${id}`, 'DELETE', null, true, { credentials: { emailAddress, password } });
+    const response = await this.api(`/courses/${id}`, 'DELETE', null, true, { emailAddress, password });
+    
     if (response.status === 204) {
       console.log('Course Deleted');
       return response;
