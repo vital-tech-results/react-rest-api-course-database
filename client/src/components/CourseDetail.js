@@ -9,8 +9,6 @@ export default class CourseDetail extends Component {
     constructor(props) {
         super(props);
         this.deleteItem = this.deleteItem.bind(this);
-        const { context } = this.props;
-        const authUser = context.authenticatedUser;
         this.state = {
             'courses': [],
             'deleted': false,
@@ -33,7 +31,11 @@ export default class CourseDetail extends Component {
                 // console.log(this.state.userId);
                 console.log(this.state.courses)
                     // console.log(data.course.User.emailAddress)
-               
+                const { context } = this.props;
+                const authUser = context.authenticatedUser;
+                if (authUser) {
+                    this.setState({ 'emailAddress': authUser.emailAddress, 'password': authUser.password})
+                }
                 
             })
             .catch(err => (Error('There seems to be problem ', err)));
@@ -43,6 +45,7 @@ export default class CourseDetail extends Component {
     deleteItem() {
         const { context } = this.props;
         const authUser = context.authenticatedUser;
+        
         
         if (authUser.emailAddress === this.state.courses.User.emailAddress) {
             console.log(this.state.emailAddress);
