@@ -6,6 +6,7 @@ const methodOverride = require('method-override');
 const asyncHandler = require('../asyncHandler');
 const auth = require('basic-auth');
 
+
 router.use(methodOverride('_method'));
 //express.json as seen here https://teamtreehouse.com/library/create-a-new-quote
 router.use(express.json());
@@ -53,17 +54,29 @@ router.post('/', authenticateUser, asyncHandler(async (req, res) => {
 // get course by primary key (pk) and display edit form
 router.get('/:id', asyncHandler(async (req, res) => {
     const id = req.params.id;
+    const course = await models.Course.findByPk(id);
+    const userId = course.userId;
+    const getUser = await models.User.findByPk(userId);
+    const userEmailAddress = getUser.emailAddress;
     // await models.Course.findByPk(id)
     await models.Course.findOne({
         where: {
             id: id
         },
-        attributes: {
-            exclude: ['createdAt', 'updatedAt']
-        }
+        // include data from other table https://github.com/sequelize/sequelize/issues/3664#issuecomment-435695381
+        include: [{
+            model: models.User,
+            attributes: {
+                exclude: ['firstName', 'lastName', 'password', 'createdAt', 'updatedAt', 'id']
+            }
+        }],
+        attributes: {            
+            exclude: ['createdAt', 'updatedAt',]
+        },
     })
+
         .then(course => {
-            if (course) {
+            if (course) {                
                 res.json({ course: course });
             } else {
                 res.status(404).json({
@@ -105,7 +118,7 @@ router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
             res.status(400).json({
                 "errors": ["Title and description are required"]
             });
-            
+
         }
     } else {
         res.status(403).json({

@@ -4,44 +4,81 @@ import {
     Redirect,
 } from "react-router-dom";
 
+
 export default class CourseDetail extends Component {
     constructor(props) {
         super(props);
         this.deleteItem = this.deleteItem.bind(this);
+        const { context } = this.props;
+        const authUser = context.authenticatedUser;
         this.state = {
             'courses': [],
             'deleted': false,
-            'user': ''
+            'userID': '',
+            'emailAddress': authUser.emailAddress,
+            'password': authUser.password
         };
     }
-    componentWillMount() {
+    componentDidMount() {
         this.getItems();
     }
     getItems() {
         fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`)
             .then(response => response.json())
             .then(data => {
-                this.setState({ 'courses': data.course});
+                const { context } = this.props;
+                const authUser = context.authenticatedUser;
+
+                if (authUser.emailAddress == data.course.User.emailAddress) {
+                    this.setState({ 'courses': data.course, 'userId': data.course.userId});
+                    console.log(this.state.emailAddress);
+                    console.log(this.state.password);
+                    console.log(this.state.userId);
+                    console.log(this.state.courses)
+                    // console.log(data.course.User.emailAddress)
+                } else {
+                    console.log(authUser.emailAddress)
+                    console.log(data.course.userId)
+                }
+                
             })
             .catch(err => (Error('There seems to be problem ', err)));
     }
 
 
     deleteItem() {
-        const { location } = this.props;
-        console.log(location.pathname);
+        const { context } = this.props;
+        const id  = this.props.match.params.id;
+        const emailAddress = this.state.emailAddress;
+        const password = this.state.password;
+        console.log(emailAddress);
+        console.log(password);
+        context.data.deleteCourse(id, emailAddress, password);
+    //     const { location } = this.props;
+    //     console.log(location.pathname);
+    //     const { context } = this.props;
+    //     const authUser = context.authenticatedUser;
 
-        fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`, {
-            method: 'DELETE'
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ 'deleted': true });
-                console.log('it was removed')
-            })
-            .catch(err => (Error('There seems to be problem ', err)));
+    //     fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`, {
+    //         method: 'DELETE',
+    //         headers: {
+    //             'Access-Control-Allow-Credentials': 'true',
+    //             'Access-Control-Allow-Origin': 'true',
+    //             "Content-Type": "application/json",
+    //             'Authorization': 'Basic ' + authUser.emailAddress + ":" + authUser.password,
+    //         },
 
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             this.setState({ 'deleted': true });
+    //             console.log(authUser.password)
+    //             console.log(authUser.emailAddress)
+    //             console.log(this.state.course.userId)
+    //         })
+    //         .catch(err => (Error('There seems to be problem ', err)));
     }
+    
 
 
     render() {

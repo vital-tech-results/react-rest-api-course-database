@@ -26,6 +26,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 app.use(cors());
+// app.options('*', cors({
+//   credentials: true,
+// }));
 
 app.use('/api', indexRouter);
 app.use('/api/users', apiRouter);

@@ -170,7 +170,7 @@ export default class UserSignIn extends Component {
                     this.setState(() => {
                         return { errors: ['Sign-in was NOT successful. Try again.'] };
                     });
-                } else {
+                } else {                    
                     this.props.history.push(from);
                 }
             })

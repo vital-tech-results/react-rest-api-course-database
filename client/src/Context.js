@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import Cookies from 'js-cookie';
 import Data from './Data';
 
-const Context = React.createContext(); 
+const Context = React.createContext();
 
 export class Provider extends Component {
 
   state = {
-    authenticatedUser: Cookies.getJSON('authenticatedUser') || null
+    authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
   };
 
   constructor() {
@@ -19,6 +19,7 @@ export class Provider extends Component {
     const { authenticatedUser } = this.state;
     const value = {
       authenticatedUser,
+      password: this.password,
       data: this.data,
       actions: {
         signIn: this.signIn,
@@ -28,20 +29,25 @@ export class Provider extends Component {
     return (
       <Context.Provider value={value}>
         {this.props.children}
-      </Context.Provider>  
+      </Context.Provider>
     );
   }
 
-  
+
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password);
+
+    const encryptPassword = window.btoa(password);
+    user.password = encryptPassword
+
     if (user !== null) {
       this.setState(() => {
         return {
           authenticatedUser: user,
+          password: encryptPassword
         };
       });
-      Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1});
+      Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
     }
     return user;
   }
