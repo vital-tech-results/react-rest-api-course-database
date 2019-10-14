@@ -8,7 +8,7 @@ export default class Data {
       method,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-      },    
+      },
     };
 
     if (body !== null) {
@@ -19,8 +19,6 @@ export default class Data {
       const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
       options.headers['Authorization'] = `Basic ${encodedCredentials}`;
     }
-    console.log(options.headers);
-    
     return fetch(url, options);
   }
 
@@ -43,7 +41,6 @@ export default class Data {
       return [];
     }
     else if (response.status === 400) {
-      // console.log(response.json())
       return response.json().then(data => {
         return data.errors;
       });
@@ -52,6 +49,8 @@ export default class Data {
       throw new Error();
     }
   }
+
+
   // async updateCourse(course, id) {
   //   const response = await this.api(`/courses/${id}`, 'PUT', course);
   //   if (response.status === 201) {
@@ -67,14 +66,16 @@ export default class Data {
 
 
   async deleteCourse(id, emailAddress, password) {
+
     const response = await this.api(`/courses/${id}`, 'DELETE', null, true, { emailAddress, password });
-    
+
     if (response.status === 204) {
       console.log('Course Deleted');
       return response;
     } else {
       return response;
     }
+
   }
 
 }

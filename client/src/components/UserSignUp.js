@@ -24,8 +24,7 @@ export default class UserSignUp extends Component {
             password,
             errors,
         } = this.state;
-
-      
+     
         return (
             <div className="bounds">
                 <div className="grid-33 centered signin">
@@ -63,15 +62,9 @@ export default class UserSignUp extends Component {
                                     id="password"
                                     name="password"
                                     type="password"
-                                    onChange={this.change}
-                                    placeholder="Password" />
-                                <input
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    type="password"
                                     value={password}
                                     onChange={this.change}
-                                    placeholder="Confirm Password" />
+                                    placeholder="Password" />
                             </React.Fragment>
                         )} />
                     <p>
@@ -94,6 +87,7 @@ export default class UserSignUp extends Component {
     }
 
     submit = () => {
+        
         const { context } = this.props;
         const {
             firstName,
@@ -108,18 +102,17 @@ export default class UserSignUp extends Component {
             firstName,
             lastName,
             emailAddress,
-            password,
-            errors
+            password
         };
 
-        context.data.createUser(user)
-            .then(errors => {
+        context.data.createUser(user)                
+            .then(errors => {                
                 if (errors.length) {
                     this.setState({ errors });
                 } else {
                     context.actions.signIn(emailAddress, password)
                         .then(() => {
-                            this.props.history.push('/signin');
+                            this.props.history.push('/');
                         });
                 }
             })

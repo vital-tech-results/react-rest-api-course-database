@@ -55,17 +55,17 @@ router.post('/', asyncHandler(async (req, res) => {
                     })
                     .catch(err => {
                         if (err.name === "SequelizeValidationError") {
-                            res.status(400).send({ "errors": [err.message] }).end();
+                            res.status(400).json({ errors: [err.message] }).end();
                         } else {
-                            res.json({ message: err.message });
+                            res.json({ errors: [err.message] }).end();
                         }
                     });
             });
         } else {
-            res.status(400).send({ "errors": ["password is required"] });
+            res.status(400).json({ errors: ["password is required"] }).end();
         }
     } else {
-        res.status(400).send({ "errors": ["All fields are required"] });
+        res.status(400).json({ errors: ["All fields are required"] }).end();
     }
 }));
 

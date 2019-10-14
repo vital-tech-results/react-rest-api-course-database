@@ -8,6 +8,7 @@ export class Provider extends Component {
 
   state = {
     authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
+    password: Cookies.getJSON('password') || null,
   };
 
   constructor() {
@@ -17,9 +18,10 @@ export class Provider extends Component {
 
   render() {
     const { authenticatedUser } = this.state;
+    const { password } = this.state;
     const value = {
       authenticatedUser,
-      password: this.password,
+      password,
       data: this.data,
       actions: {
         signIn: this.signIn,
@@ -36,25 +38,29 @@ export class Provider extends Component {
 
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password);
-
-    const encryptPassword = window.btoa(password);
-    user.password = encryptPassword
+    // const encryptPassword = btoa(password);
+    // this.setState({ 'password': encryptPassword });
+    // user.password = encryptPassword
 
     if (user !== null) {
       this.setState(() => {
+        console.log(password)
         return {
           authenticatedUser: user,
-          password: encryptPassword
+          password: password
         };
       });
       Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
+      Cookies.set('password', JSON.stringify(password), { expires: 1 });
     }
     return user;
   }
 
   signOut = () => {
     this.setState({ authenticatedUser: null });
+    this.setState({ password: null });
     Cookies.remove('authenticatedUser');
+    Cookies.remove('password');
   }
 }
 
