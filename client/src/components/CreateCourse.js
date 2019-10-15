@@ -6,126 +6,161 @@ export default class CreateCourse extends Component {
         super(props, context);
         this.state = {
             errors: [],
-            courses: [],
-            courseTitle: '',
+            password: null,
+            emailAddress: null,
+            title: '',
             description: '',
             estimatedTime: '',
-            materialsNeeded: ''
+            "materialsNeeded": '',
+            userId: null
+
         };
     }
 
     componentDidMount() {
-        this.createCourse();
+        this.isLoggedIn();
     }
 
-  async  createCourse() {
-        // context.data.createCourse(id, emailAddress, password)
-        // console.log('ookasdf')
-        await fetch('http://localhost:5000/api/courses')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ 'courses': data.course, 'courseTitle': data.course.title });
-                console.log(this.state.courseTitle)
+    async isLoggedIn() {
+        const { context } = this.props;
+        const authUser = context.authenticatedUser;
+        if (authUser) {
+            await this.setState({ 'emailAddress': authUser.emailAddress, 'password': authUser.password, 'userId': authUser.id });
+        }
+    }
+    change = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+
+        this.setState(() => {
+            return {
+                [name]: value
+            };
+        });
+    }
+    submit = () => {
+        const { context } = this.props;
+        const password = context.password;
+        const emailAddress = this.state.emailAddress;
+
+        const {
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded,
+            userId } = this.state;
+
+        const courseJSON = { title, description, estimatedTime, materialsNeeded, userId }
+
+        const { from } = this.props.location.state || { from: { pathname: '/' } };
+
+        context.data.createCourse(courseJSON, emailAddress, password)
+            .then(errors => {
+                if (errors.length) {
+                    this.setState({ errors });
+                } else {
+                    alert(`Course has been created`);
+                    this.props.history.push('/');
+                }
             })
-            .catch(err => (Error('There seems to be problem ', err)));
+            .catch((err) => {
+                console.log(err);
+                this.props.history.push('/error');
+            });
     }
 
-    cancel () {
+    cancel = () => {
         this.props.history.push('/');
     }
 
     render() {
         const {
             errors,
-            courseTitle,
+            title,
             description,
             estimatedTime,
-            materialsNeeded            
+            materialsNeeded
         } = this.state
-   
-        return (                          
-                <div className="bounds course--detail">
-                    <h1>Create Course</h1>
-                    <div>
-                        <div className="validation--errors--label">
-                            {errors ? errors.map(error => <li key={error}>{error}</li>) : ''}
-                        </div>
 
-                        <Form
-                            cancel={this.cancel}
-                            errors={errors}
-                            submit={this.submit}
-                            submitButtonText="Create Course"
-                            elements={() => (
-                                <div>
-                                    <div className="grid-66">
-                                        <div className="course--header">
-                                            <h4 className="course--label">Course</h4>
-                                            <React.Fragment>
-                                                <input
-                                                    id="courseTitle"
-                                                    name="courseTitle"
-                                                    type="text"
-                                                    className="input-title course--title--input"
-                                                    value={courseTitle}
-                                                    value='oasd'
-                                                    onChange={this.change}
-                                                    placeholder="Course Title" />
-                                            </React.Fragment>
-                                        </div>
-                                        {/* course description */}
-                                        <div className="course--description">
-                                            <React.Fragment>
-                                                <textarea
-                                                    id="description"
-                                                    name="description"
-                                                    type="text"
-                                                    value={description}
-                                                    onChange={this.change}
-                                                    placeholder="Course description..." />
-                                            </React.Fragment>
-                                        </div>
+        return (
+            <div className="bounds course--detail">
+                <h1>Create Course</h1>
+                <div>
+                    
+                    <Form
+                        cancel={this.cancel}
+                        errors={errors}
+                        submit={this.submit}
+                        submitButtonText="Create Course"
+                        elements={() => (
+                            <div>
+                                <div className="grid-66">
+                                    <div className="course--header">
+                                        <h4 className="course--label">Course</h4>
+                                        <React.Fragment>
+                                            <input
+                                                id="title"
+                                                name="title"
+                                                type="text"
+                                                className="input-title course--title--input"
+                                                value={title}
+                                                onChange={this.change}
+                                                placeholder="Course Title" />
+                                        </React.Fragment>
                                     </div>
-
-                                    {/* right side of form */}                                    
-                                        <div className="grid-25 grid-right">
-                                            <div className="course--stats">
-                                                <ul className="course--stats--list">
-                                                    <li className="course--stats--list--item">
-                                                        <h4>Estimated Time</h4>
-                                                        <div>
-                                                            <React.Fragment>
-                                                                <input
-                                                                    id="estimatedTime"
-                                                                    name="estimatedTime"
-                                                                    type="text"
-                                                                    className="course--time--input"
-                                                                    value={estimatedTime}
-                                                                    onChange={this.change}
-                                                                    placeholder="Hours" />
-                                                            </React.Fragment>
-                                                        </div>
-                                                    </li>
-                                                    <li className="course--stats--list--item">
-                                                        <h4>Materials Needed</h4>
-                                                        <div>
-                                                            <React.Fragment>
-                                                                <textarea
-                                                                    id="materialsNeeded"
-                                                                    name="materialsNeeded"
-                                                                    value={materialsNeeded}
-                                                                    onChange={this.change}
-                                                                    placeholder="List materials..." />
-                                                            </React.Fragment>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>                                    
+                                    {/* course description */}
+                                    <div className="course--description">
+                                        <React.Fragment>
+                                            <textarea
+                                                id="description"
+                                                name="description"
+                                                type="text"
+                                                value={description}
+                                                onChange={this.change}
+                                                placeholder="Course description..." />
+                                        </React.Fragment>
+                                    </div>
                                 </div>
-                            )} />
-                    </div>
-                </div>            
+
+                                {/* right side of form */}
+                                <div className="grid-25 grid-right">
+                                    <div className="course--stats">
+                                        <ul className="course--stats--list">
+                                            <li className="course--stats--list--item">
+                                                <h4>Estimated Time</h4>
+                                                <div>
+                                                    <React.Fragment>
+                                                        <input
+                                                            id="estimatedTime"
+                                                            name="estimatedTime"
+                                                            type="text"
+                                                            className="course--time--input"
+                                                            value={estimatedTime}
+                                                            onChange={this.change}
+                                                            placeholder="Hours" />
+                                                    </React.Fragment>
+                                                </div>
+                                            </li>
+                                            <li className="course--stats--list--item">
+                                                <h4>Materials Needed</h4>
+                                                <div>
+                                                    <React.Fragment>
+                                                        <textarea
+                                                            id="materialsNeeded"
+                                                            name="materialsNeeded"
+                                                            value={materialsNeeded}
+                                                            onChange={this.change}
+                                                            placeholder="List materials..." />
+                                                    </React.Fragment>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )} />
+                </div>
+            </div>
         );
     };
 };

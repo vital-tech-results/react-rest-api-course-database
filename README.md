@@ -7,14 +7,18 @@
 * React
 * React Router DOM
 * SQLite3
-* Cookies
-* Sequelize
+* Sequelize (ORM)
+* sequelize cli to generate sequelize files
 * JavaScript
 * Node.js
 * Express
-* Middleware including ```body-parser``` and ```cookie-parser```
+* Express Middleware including ```body-parser``` and ```cookie-parser```
 * ```npx express generator``` to generate express files
-* sequelize cli to generate sequelize files
+* JSX
+* React Context API
+* Create React App
+* JavaScript Fetch Method
+* Node modules including ```basic-auth```, ```js-cookie```, ```react-markdown```,  and ```bcryptjs``` 
 
 ## Getting Started
 

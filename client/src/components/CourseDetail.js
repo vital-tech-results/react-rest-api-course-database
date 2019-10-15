@@ -24,6 +24,8 @@ export default class CourseDetail extends Component {
     componentDidMount() {
         this.getItems();
     }
+
+ 
  async  getItems() {
       await  fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`)
             .then(response => response.json())
@@ -145,3 +147,6 @@ export default class CourseDetail extends Component {
     }
 }
 
+
+
+// { `/courses/${this.props.match.params.id}/update` }
