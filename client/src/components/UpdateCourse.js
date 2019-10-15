@@ -4,8 +4,8 @@ import Form from './Form';
 
 export default class UpdateCourse extends Component {
 
-    constructor(props) {
-        super(props);
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             errors: [],
             courseTitle: '',
@@ -31,15 +31,15 @@ export default class UpdateCourse extends Component {
 
     render() {
         const {
-            errors,
-            // courseTitle,
-            // description,
-            // estimatedTime,
-            // materialsNeeded,
+            errors
+        //     courseTitle,
+        //     description,
+        //     estimatedTime,
+        //     materialsNeeded,
         } = this.state;
 
-        const { context } = this.props;
-        const authUser = context.authenticatedUser;
+        // const { context } = this.props;
+        // const authUser = context.authenticatedUser;
 
         return (
             <div>
@@ -128,54 +128,54 @@ export default class UpdateCourse extends Component {
 
 
     change = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
+        // const name = event.target.name;
+        // const value = event.target.value;
 
-        this.setState(() => {
-            return {
-                [name]: value
-            };
-        });
+        // this.setState(() => {
+        //     return {
+        //         [name]: value
+        //     };
+        // });
     }
 
     submit = () => {
-        const { context } = this.props;
-        const {
-            errors,
-            courseTitle,
-            description,
-            estimatedTime,
-            materialsNeeded,
-            id
-        } = this.state;
+        // const { context } = this.props;
+        // const {
+        //     errors,
+        //     courseTitle,
+        //     description,
+        //     estimatedTime,
+        //     materialsNeeded,
+        //     id
+        // } = this.state;
 
-        // Create user
-        const user = {
-            errors,
-            courseTitle,
-            description,
-            estimatedTime,
-            materialsNeeded,
-            id
-        };
+        // // Create user
+        // const user = {
+        //     errors,
+        //     courseTitle,
+        //     description,
+        //     estimatedTime,
+        //     materialsNeeded,
+        //     id
+        // };
 
-        context.data.updateCourse(this.state.course)
-            .then(errors => {
-                if (errors.length) {
-                    this.setState({ errors });
-                } else {
-                    this.props.history.push('/signin');
+        // context.data.updateCourse(this.state.course)
+        //     .then(errors => {
+        //         if (errors.length) {
+        //             this.setState({ errors });
+        //         } else {
+        //             this.props.history.push('/signin');
 
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                this.props.history.push('/error');
-            });
+        //         }
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //         this.props.history.push('/error');
+        //     });
     }
 
     cancel = () => {
-        this.props.history.push('/');
+        // this.props.history.push('/');
     }
 
 

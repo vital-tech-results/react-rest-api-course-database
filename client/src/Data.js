@@ -22,6 +22,7 @@ export default class Data {
     return fetch(url, options);
   }
 
+
   async getUser(emailAddress, password) {
     const response = await this.api(`/users`, 'GET', null, true, { emailAddress, password });
     if (response.status === 200) {
@@ -50,6 +51,16 @@ export default class Data {
     }
   }
 
+  async createCourse(course, emailAddress, password) {
+
+    const response = await this.api(`/courses`, 'POST', course, true, { emailAddress, password });
+
+    if (response.status === 204) {
+      return response;
+    } else {
+      return response;
+    }
+  }
 
   // async updateCourse(course, id) {
   //   const response = await this.api(`/courses/${id}`, 'PUT', course);
@@ -70,7 +81,6 @@ export default class Data {
     const response = await this.api(`/courses/${id}`, 'DELETE', null, true, { emailAddress, password });
 
     if (response.status === 204) {
-      console.log('Course Deleted');
       return response;
     } else {
       return response;

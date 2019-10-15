@@ -48,7 +48,7 @@ router.post('/', authenticateUser, asyncHandler(async (req, res) => {
     } else {
         res.status(400).json({
             "errors": ["Title is required. Description is required."]
-        });
+        }).end();
     }
 }));
 // get course by primary key (pk) and display edit form
@@ -67,7 +67,7 @@ router.get('/:id', asyncHandler(async (req, res) => {
         include: [{
             model: models.User,
             attributes: {
-                exclude: ['firstName', 'lastName', 'password', 'createdAt', 'updatedAt', 'id']
+                exclude: ['password', 'createdAt', 'updatedAt', 'id']
             }
         }],
         attributes: {            

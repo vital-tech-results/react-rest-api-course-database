@@ -2,44 +2,47 @@ import React, { Component } from 'react';
 import Form from './Form';
 
 export default class CreateCourse extends Component {
-    constructor() {
-        super();
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             errors: [],
+            courses: [],
             courseTitle: '',
             description: '',
             estimatedTime: '',
             materialsNeeded: ''
         };
     }
-    change = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
 
-        this.setState(() => {
-            return {
-                [name]: value
-            };
-        });
+    componentDidMount() {
+        this.createCourse();
     }
 
-    cancel = () => {
+  async  createCourse() {
+        // context.data.createCourse(id, emailAddress, password)
+        // console.log('ookasdf')
+        await fetch('http://localhost:5000/api/courses')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ 'courses': data.course, 'courseTitle': data.course.title });
+                console.log(this.state.courseTitle)
+            })
+            .catch(err => (Error('There seems to be problem ', err)));
+    }
+
+    cancel () {
         this.props.history.push('/');
     }
 
     render() {
-
         const {
             errors,
             courseTitle,
             description,
             estimatedTime,
-            materialsNeeded,
-        } = this.state;
-
-        const { context} = this.props;
-        const authUser = context.authenticatedUser;
-
+            materialsNeeded            
+        } = this.state
+   
         return (                          
                 <div className="bounds course--detail">
                     <h1>Create Course</h1>
@@ -60,11 +63,12 @@ export default class CreateCourse extends Component {
                                             <h4 className="course--label">Course</h4>
                                             <React.Fragment>
                                                 <input
-                                                    id="username"
+                                                    id="courseTitle"
                                                     name="courseTitle"
                                                     type="text"
                                                     className="input-title course--title--input"
                                                     value={courseTitle}
+                                                    value='oasd'
                                                     onChange={this.change}
                                                     placeholder="Course Title" />
                                             </React.Fragment>

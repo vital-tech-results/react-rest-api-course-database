@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Form from './Form';
 
+
 export default class UserSignUp extends Component {
 
     constructor() {
@@ -15,7 +16,6 @@ export default class UserSignUp extends Component {
         };
     }
 
-
     render() {
         const {
             firstName,
@@ -24,7 +24,7 @@ export default class UserSignUp extends Component {
             password,
             errors,
         } = this.state;
-     
+
         return (
             <div className="bounds">
                 <div className="grid-33 centered signin">
@@ -87,14 +87,13 @@ export default class UserSignUp extends Component {
     }
 
     submit = () => {
-        
+
         const { context } = this.props;
         const {
             firstName,
             lastName,
             emailAddress,
             password,
-            errors
         } = this.state;
 
         // Create user
@@ -105,8 +104,8 @@ export default class UserSignUp extends Component {
             password
         };
 
-        context.data.createUser(user)                
-            .then(errors => {                
+        context.data.createUser(user)
+            .then(errors => {
                 if (errors.length) {
                     this.setState({ errors });
                 } else {
