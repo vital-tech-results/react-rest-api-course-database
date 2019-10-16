@@ -9,7 +9,15 @@ export class Provider extends Component {
   state = {
     authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
     password: Cookies.getJSON('password') || null,
-    id: null
+    id: null,
+
+    // courses: '',
+    // title: Cookies.getJSON('title') || null,
+    // description: '',
+    // estimatedTime: '',
+    // materialsNeeded: '',
+    // courseId: ''
+
   };
 
   constructor() {
@@ -20,9 +28,11 @@ export class Provider extends Component {
   render() {
     const { authenticatedUser } = this.state;
     const { password } = this.state;
+    // const { title } = this.state;
     const value = {
       authenticatedUser,
       password,
+      // title,
       data: this.data,
       actions: {
         signIn: this.signIn,
@@ -36,9 +46,31 @@ export class Provider extends Component {
     );
   }
 
+
+  // getCourseDetails = async () => {
+  //   await fetch(`http://localhost:5000/api/courses/29`)
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       this.setState(() => {
+  //         return {
+  //           courses: data.course,
+  //           title: data.course.title,
+  //           description: data.course.description,
+  //           estimatedTime: data.course.estimatedTime,
+  //           materialsNeeded: data.course.materialsNeeded,
+  //           courseId: data.course.id
+  //         };
+  //       });
+  //       Cookies.set('title', JSON.stringify(data.course.title), { expires: 1 });
+  //     })
+  //     .catch(err => (Error('There seems to be problem ', err)));
+
+  //   return this.data;
+  // }
+
   signIn = async (emailAddress, password) => {
     const user = await this.data.getUser(emailAddress, password)
-      
+
     if (user !== null) {
       this.setState(() => {
         return {

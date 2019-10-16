@@ -11,7 +11,7 @@ export default class CreateCourse extends Component {
             title: '',
             description: '',
             estimatedTime: '',
-            "materialsNeeded": '',
+            materialsNeeded: '',
             userId: null
 
         };
@@ -51,8 +51,6 @@ export default class CreateCourse extends Component {
             userId } = this.state;
 
         const courseJSON = { title, description, estimatedTime, materialsNeeded, userId }
-
-        const { from } = this.props.location.state || { from: { pathname: '/' } };
 
         context.data.createCourse(courseJSON, emailAddress, password)
             .then(errors => {

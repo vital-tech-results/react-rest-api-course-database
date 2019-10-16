@@ -112,18 +112,18 @@ router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
                 { fields: ['title', 'description', 'estimatedTime', 'materialsNeeded', 'userId'] }
             )
                 .then(course => {
-                    res.status(204).end();
+                    res.status(204);
                 });
         } else {
             res.status(400).json({
                 "errors": ["Title and description are required"]
-            });
+            }).end();
 
         }
     } else {
         res.status(403).json({
             "errors": ["You do not have authorization to edit this course."]
-        });
+        }).end();
     }
 }));
 

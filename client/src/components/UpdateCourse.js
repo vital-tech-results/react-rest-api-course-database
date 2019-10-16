@@ -5,41 +5,108 @@ import Form from './Form';
 export default class UpdateCourse extends Component {
 
     constructor(props, context) {
+        // const { context } = this.props;
         super(props, context);
         this.state = {
+            courses: [],
             errors: [],
-            courseTitle: '',
+            password: null,
+            emailAddress: null,
+            title: '',
             description: '',
             estimatedTime: '',
             materialsNeeded: '',
             id: '',
-            'courses': [],
+            userId: null
+
         };
     }
+
     componentDidMount() {
-        this.getItems();
+        this.isLoggedIn();
     }
-    getItems() {
+
+    async isLoggedIn() {
+        const { context } = this.props;
+        const authUser = context.authenticatedUser;
+        if (authUser) {
+            await this.setState({ 'emailAddress': authUser.emailAddress, 'password': authUser.password, 'userId': authUser.id, });
+        }
+        this.getCourseDetails();                  
+    }
+
+    getCourseDetails() {
         fetch(`http://localhost:5000/api/courses/${this.props.match.params.id}`)
             .then(response => response.json())
             .then(data => {
-                this.setState({ 'courses': data.course });
-
+                this.setState({
+                    courses: data.course,
+                    title: data.course.title,
+                    description: data.course.description,
+                    estimatedTime: data.course.estimatedTime,
+                    materialsNeeded: data.course.materialsNeeded,
+                    id: data.course.id
+                })
             })
             .catch(err => (Error('There seems to be problem ', err)));
     }
 
-    render() {
-        const {
-            errors
-        //     courseTitle,
-        //     description,
-        //     estimatedTime,
-        //     materialsNeeded,
-        } = this.state;
 
-        // const { context } = this.props;
-        // const authUser = context.authenticatedUser;
+    change = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+
+        this.setState(() => {
+            return {
+                [name]: value
+            };
+        });
+    }
+    submit = () => {
+        const { context } = this.props;
+        const password = context.password;
+        const emailAddress = this.state.emailAddress;
+
+        const {
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded,
+            id,
+            userId } = this.state;
+
+        const courseJSON = { title, description, estimatedTime, materialsNeeded, userId }
+
+        context.data.updateCourse(courseJSON, id, emailAddress, password)
+            .then(errors => {
+                if (errors.length) {
+                        alert(`NOT UPDATED. SEE ERRORS.`);
+                    this.setState({ errors });
+                } else {
+                        alert(`Course has been updated`);                    
+                    this.props.history.push('/');
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                this.props.history.push('/error');
+            });
+    }
+
+
+    cancel = () => {
+        this.props.history.push('/');
+    }
+
+    render() {
+
+        const {
+            errors,
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded
+        } = this.state
 
         return (
             <div>
@@ -60,22 +127,24 @@ export default class UpdateCourse extends Component {
                                         <div className="course--header">
                                             <h4 className="course--label">Course</h4>
                                             <React.Fragment>
-                                                <input id="courseTitle"
-                                                    name="courseTitle"
+                                                <input
+                                                    id="title"
+                                                    name="title"
                                                     type="text"
                                                     className="input-title course--title--input"
                                                     placeholder="Course title..."
-                                                    defaultValue={this.state.courses.title}
+                                                    value={title}
                                                     onChange={this.change} />
                                             </React.Fragment>
 
                                             <div className="course--description">
                                                 <React.Fragment>
-                                                    <textarea id="description"
+                                                    <textarea
+                                                        id="description"
                                                         name="description"
                                                         type="text"
                                                         placeholder="Course description..."
-                                                        defaultValue={this.state.courses.description}
+                                                        value={description}
                                                         onChange={this.change} />
                                                 </React.Fragment>
                                             </div>
@@ -95,7 +164,7 @@ export default class UpdateCourse extends Component {
                                                                     type="text"
                                                                     className="course--time--input"
                                                                     placeholder="Hours"
-                                                                    defaultValue={this.state.courses.estimatedTime || ""}
+                                                                    value={estimatedTime}
                                                                     onChange={this.change} />
                                                             </React.Fragment>
                                                         </div>
@@ -107,7 +176,7 @@ export default class UpdateCourse extends Component {
                                                                 id="materialsNeeded"
                                                                 name="materialsNeeded"
                                                                 placeholder="List materials..."
-                                                                defaultValue={this.state.courses.materialsNeeded}
+                                                                value={materialsNeeded}
                                                                 onChange={this.change}
                                                             />
                                                         </div>
@@ -125,59 +194,5 @@ export default class UpdateCourse extends Component {
 
         );
     };
-
-
-    change = (event) => {
-        // const name = event.target.name;
-        // const value = event.target.value;
-
-        // this.setState(() => {
-        //     return {
-        //         [name]: value
-        //     };
-        // });
-    }
-
-    submit = () => {
-        // const { context } = this.props;
-        // const {
-        //     errors,
-        //     courseTitle,
-        //     description,
-        //     estimatedTime,
-        //     materialsNeeded,
-        //     id
-        // } = this.state;
-
-        // // Create user
-        // const user = {
-        //     errors,
-        //     courseTitle,
-        //     description,
-        //     estimatedTime,
-        //     materialsNeeded,
-        //     id
-        // };
-
-        // context.data.updateCourse(this.state.course)
-        //     .then(errors => {
-        //         if (errors.length) {
-        //             this.setState({ errors });
-        //         } else {
-        //             this.props.history.push('/signin');
-
-        //         }
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //         this.props.history.push('/error');
-        //     });
-    }
-
-    cancel = () => {
-        // this.props.history.push('/');
-    }
-
-
 };
 
