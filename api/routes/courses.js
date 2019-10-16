@@ -112,7 +112,7 @@ router.put('/:id', authenticateUser, asyncHandler(async (req, res) => {
                 { fields: ['title', 'description', 'estimatedTime', 'materialsNeeded', 'userId'] }
             )
                 .then(course => {
-                    res.status(204);
+                    res.status(204).end();
                 });
         } else {
             res.status(400).json({
