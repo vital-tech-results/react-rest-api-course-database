@@ -7,13 +7,22 @@ const indexRouter = require('./routes/index');
 const courseRouter = require('./routes/courses');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const path = require("path");
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
 // create the Express app
 const app = express();
+
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+// set the production build path
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -31,8 +40,6 @@ app.use(cors());
 app.use('/api', indexRouter);
 app.use('/api/users', apiRouter);
 app.use('/api/courses', courseRouter);
-
-// TODO setup your api routes here
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
@@ -60,7 +67,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// set our port
+// set the port
 app.set('port', process.env.PORT || 5000);
 
 // start listening on our port
