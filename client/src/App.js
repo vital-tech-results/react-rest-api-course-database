@@ -37,10 +37,10 @@ export default class App extends Component {
             {/* private routes must be above other routes */}
             <PrivateRoute exact path="/courses/:id/update" component={UpdateCourseWithContext} />
             <PrivateRoute exact path="/courses/create" component={CreateCourseWithContext} />
-            
+
             <Route exact path="/" component={CourseListWithContext} />
             <Route exact path="/courses/:id" component={CourseDetailWithContext} />
-           
+
             <Route path="/signin" component={UserSignInWithContext} />
             <Route path="/signup" component={UserSignUpWithContext} />
             <Route path="/signout" component={UserSignOutWithContext} />
